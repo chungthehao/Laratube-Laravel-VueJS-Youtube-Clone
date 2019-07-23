@@ -65,6 +65,10 @@
                                 <p class="text-center">{{ $channel->description }}</p>
                             </div>
                         @endif
+
+                        <div class="text-center">
+                            <button class="btn btn-danger">Subscribe</button>
+                        </div>
                     </div>
                 </div>
             </div>
