@@ -20,6 +20,9 @@
 
   &:hover {
     .channel-avatar-overlay {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       position: absolute;
       background: rgba(0, 0, 0, 0.4);
       height: 100%;

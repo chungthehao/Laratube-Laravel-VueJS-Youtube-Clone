@@ -64,12 +64,21 @@ class ChannelController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Laratube\Channel $channel
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Channel $channel)
     {
-        //
+        if ($request->hasFile('avatar')) {
+            // Vì mỗi channel chỉ đc có avatar nên sẽ xóa avatar cũ (nếu có, của chính channel này)
+            $channel->clearMediaCollection('avatars');
+
+            $channel
+                ->addMediaFromRequest('avatar')
+                ->toMediaCollection('avatars');
+        }
+
+        return redirect()->back();
     }
 
     /**
