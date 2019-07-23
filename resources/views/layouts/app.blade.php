@@ -82,5 +82,19 @@
             @yield('content')
         </main>
     </div>
+
+    <script>
+        {{-- Để ở đây để có tính global --}}
+        window.AuthUser = '{!! auth()->user() !!}'; // Chuỗi có định dạng JSON
+
+        // 2 dấu __ để làm cho khả năng bị trùng thấp đi thôi.
+        window.__auth = function () {
+            try {
+                return JSON.parse(window.AuthUser);
+            } catch (e) {
+                return null;
+            }
+        }
+    </script>
 </body>
 </html>

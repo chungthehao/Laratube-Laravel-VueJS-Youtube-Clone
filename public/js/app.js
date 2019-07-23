@@ -31857,6 +31857,9 @@ module.exports = g;
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+
+__webpack_require__(/*! ./components/subscribe-button */ "./resources/js/components/subscribe-button.js");
+
 var app = new Vue({
   el: '#app'
 });
@@ -31886,6 +31889,32 @@ if (token) {
 } else {
   console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
+
+/***/ }),
+
+/***/ "./resources/js/components/subscribe-button.js":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/subscribe-button.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+Vue.component('subscribe-button', {
+  props: {
+    subscriptions: {
+      type: Array,
+      required: true,
+      "default": function _default() {
+        return [];
+      }
+    }
+  },
+  methods: {
+    toggleSubscription: function toggleSubscription() {
+      if (!__auth()) alert('Please login to subscribe!');
+    }
+  }
+});
 
 /***/ }),
 

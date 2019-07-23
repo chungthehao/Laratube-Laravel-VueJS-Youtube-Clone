@@ -67,7 +67,11 @@
                         @endif
 
                         <div class="text-center">
-                            <button class="btn btn-danger">Subscribe</button>
+                            <subscribe-button inline-template
+                                              :subscriptions="{!! $channel->subscriptions !!}">
+                                <button @click="toggleSubscription"
+                                        class="btn btn-danger">Subscribe</button>
+                            </subscribe-button>
                         </div>
                     </div>
                 </div>
