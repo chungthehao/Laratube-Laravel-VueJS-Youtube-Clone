@@ -4,9 +4,15 @@ namespace Laratube\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Laratube\Channel;
+use Laratube\Http\Requests\Channels\UpdateChannelRequest;
 
 class ChannelController extends Controller
 {
+    public function __construct()
+    {
+        return $this->middleware(['auth'])->only(['update']); // Sẽ đá qua trang login nếu chưa login
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -67,16 +73,23 @@ class ChannelController extends Controller
      * @param  \Laratube\Channel $channel
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Channel $channel)
+    public function update(UpdateChannelRequest $request, Channel $channel)
     {
         if ($request->hasFile('avatar')) {
             // Vì mỗi channel chỉ đc có avatar nên sẽ xóa avatar cũ (nếu có, của chính channel này)
             $channel->clearMediaCollection('avatars');
 
+            // Update avatar
             $channel
                 ->addMediaFromRequest('avatar')
                 ->toMediaCollection('avatars');
         }
+
+        // Update other fields
+        $channel->update([
+            'name' => $request->name,
+            'description' => $request->description
+        ]);
 
         return redirect()->back();
     }

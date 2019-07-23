@@ -34,4 +34,10 @@ class Channel extends Model implements HasMedia
             ->height(98)*/
             ->keepOriginalImageFormat();
     }
+
+    public function editable()
+    {
+        if ( ! auth()->check()) return false;
+        return auth()->id() === $this->user_id;
+    }
 }
