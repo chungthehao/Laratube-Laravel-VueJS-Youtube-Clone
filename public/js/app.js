@@ -32953,9 +32953,13 @@ Vue.component('subscribe-button', {
       // login r mà là owner của channel này hoặc
       // login r mà ko phải this channel's subscriber --> false
       if (!__auth() || __auth().id === this.channel.user_id) return false;
-      return !!this.subscriptions.find(function (subscription) {
+      return !!this.subscription; // (!!) cast to boolean
+    },
+    subscription: function subscription() {
+      if (!__auth()) return null;
+      return this.subscriptions.find(function (subscription) {
         return subscription.user_id === __auth().id;
-      }); // (!!) cast to boolean
+      });
     },
     owner: function owner() {
       return __auth() && __auth().id === this.channel.user_id;
@@ -32966,7 +32970,24 @@ Vue.component('subscribe-button', {
   },
   methods: {
     toggleSubscription: function toggleSubscription() {
-      if (!__auth()) alert('Please login to subscribe!');
+      if (!__auth()) return alert('Please login to subscribe!');
+      if (this.owner) return alert('You can NOT subscribe to your channel!');
+
+      if (this.subscribed) {
+        // Thuc hien viec unsubscribe
+        axios["delete"]("/channels/".concat(this.channel.id, "/subscriptions/").concat(this.subscription.id)).then(function (res) {
+          return console.log(res.data);
+        })["catch"](function (err) {
+          return console.log(err.response.data);
+        });
+      } else {
+        // Thuc hien viec subscribe
+        axios.post("/channels/".concat(this.channel.id, "/subscriptions")).then(function (res) {
+          return console.log(res.data);
+        })["catch"](function (err) {
+          return console.log(err.response.data);
+        });
+      }
     }
   }
 });
