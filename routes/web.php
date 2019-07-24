@@ -19,6 +19,8 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('/channels', 'ChannelController');
-Route::resource('channels.subscriptions', 'SubscriptionController')
+Route::resource('/channels.subscriptions', 'SubscriptionController')
     ->only(['store', 'destroy'])
     ->middleware(['auth']);
+
+Route::get('/channels/{channel}/videos', 'UploadVideoController@index')->name('channels.upload-videos.index');
