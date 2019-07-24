@@ -8,12 +8,15 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Laratube\Video;
+use FFMpeg\Format\Video\X264;
+use FFMpeg;
 
 class ConvertForStreaming implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $video;
+    //public $x264;
 
     /**
      * Create a new job instance.
@@ -23,6 +26,7 @@ class ConvertForStreaming implements ShouldQueue
     public function __construct(Video $video)
     {
         $this->video = $video;
+        //$this->x264 = new x264('aac'); // aac encoder
     }
 
     /**
@@ -32,6 +36,16 @@ class ConvertForStreaming implements ShouldQueue
      */
     public function handle()
     {
-        echo 'Handle convertForStreaming';
+        $low = (new x264('aac'))->setKiloBitrate(100); // ~ 360p
+        $mid = (new x264('aac'))->setKiloBitrate(250);
+        $high = (new x264('aac'))->setKiloBitrate(500);
+
+        FFMpeg::fromDisk('local')->
+                open($this->video->path)->
+                exportForHLS()->
+                addFormat($low)->
+                addFormat($mid)->
+                addFormat($high)->
+                save("public/videos/{$this->video->id}/{$this->video->id}.m3u8");
     }
 }
