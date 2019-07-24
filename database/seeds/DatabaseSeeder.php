@@ -39,10 +39,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Tạo 1 lượng subscribers khổng lồ cho 2 channels trên
-        factory(Subscription::class, 10000)->create([
+        factory(Subscription::class, 100)->create([
             'channel_id' => $channel1->id,
         ]);
-        factory(Subscription::class, 10000)->create([
+        factory(Subscription::class, 100)->create([
             'channel_id' => $channel2->id,
         ]);
 
