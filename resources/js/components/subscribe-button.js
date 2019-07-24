@@ -7,11 +7,16 @@ Vue.component('subscribe-button', {
             required: true,
             default: () => ({}) // Default is an empty object
         },
-        subscriptions: {
+        initialSubscriptions: {
             type: Array,
             required: true,
             default: () => [] // Default is an empty array
         }
+    },
+    data() {
+        return {
+            subscriptions: this.initialSubscriptions,
+        };
     },
     computed: {
         subscribed() {
@@ -43,13 +48,22 @@ Vue.component('subscribe-button', {
                 // Thuc hien viec unsubscribe
                 axios
                     .delete(`/channels/${this.channel.id}/subscriptions/${this.subscription.id}`)
-                    .then(res => console.log(res.data))
+                    .then(res => {
+                        console.log(res.data);
+                        const index = this.subscriptions.findIndex(subscription => subscription.id === res.data.id);
+                        if (index > -1) {
+                            this.subscriptions.splice(index, 1);
+                        }
+                    })
                     .catch(err => console.log(err.response.data));
             } else {
                 // Thuc hien viec subscribe
                 axios
                     .post(`/channels/${this.channel.id}/subscriptions`)
-                    .then(res => console.log(res.data))
+                    .then(res => {
+                        console.log(res.data);
+                        this.subscriptions.push(res.data);
+                    })
                     .catch(err => console.log(err.response.data));
             }
         }

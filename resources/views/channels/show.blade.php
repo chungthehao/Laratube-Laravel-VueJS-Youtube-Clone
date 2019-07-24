@@ -42,7 +42,7 @@
                             <div class="text-center">
                                 <subscribe-button inline-template
                                                   :channel="{{ $channel }}"
-                                                  :subscriptions="{{ $channel->subscriptions }}">
+                                                  :initial-subscriptions="{{ $channel->subscriptions }}">
                                     <button type="button" @click="toggleSubscription"
                                             class="btn btn-danger">
                                         @{{ owner ? '' : subscribed ? 'Unsubscribe' : 'Subscribe' }} @{{ totalSubscribers }} @{{ owner ? 'Subscribers' : '' }}

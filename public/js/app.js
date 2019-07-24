@@ -32938,7 +32938,7 @@ Vue.component('subscribe-button', {
       } // Default is an empty object
 
     },
-    subscriptions: {
+    initialSubscriptions: {
       type: Array,
       required: true,
       "default": function _default() {
@@ -32946,6 +32946,11 @@ Vue.component('subscribe-button', {
       } // Default is an empty array
 
     }
+  },
+  data: function data() {
+    return {
+      subscriptions: this.initialSubscriptions
+    };
   },
   computed: {
     subscribed: function subscribed() {
@@ -32970,20 +32975,32 @@ Vue.component('subscribe-button', {
   },
   methods: {
     toggleSubscription: function toggleSubscription() {
+      var _this = this;
+
       if (!__auth()) return alert('Please login to subscribe!');
       if (this.owner) return alert('You can NOT subscribe to your channel!');
 
       if (this.subscribed) {
         // Thuc hien viec unsubscribe
         axios["delete"]("/channels/".concat(this.channel.id, "/subscriptions/").concat(this.subscription.id)).then(function (res) {
-          return console.log(res.data);
+          console.log(res.data);
+
+          var index = _this.subscriptions.findIndex(function (subscription) {
+            return subscription.id === res.data.id;
+          });
+
+          if (index > -1) {
+            _this.subscriptions.splice(index, 1);
+          }
         })["catch"](function (err) {
           return console.log(err.response.data);
         });
       } else {
         // Thuc hien viec subscribe
         axios.post("/channels/".concat(this.channel.id, "/subscriptions")).then(function (res) {
-          return console.log(res.data);
+          console.log(res.data);
+
+          _this.subscriptions.push(res.data);
         })["catch"](function (err) {
           return console.log(err.response.data);
         });
