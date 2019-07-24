@@ -11,6 +11,7 @@ Vue.component('channel-uploads', {
         return {
             selected: false,
             videos: [],
+            progress: {},
         };
     },
     methods: {
@@ -26,7 +27,19 @@ Vue.component('channel-uploads', {
                 form.append('video', video);
                 form.append('title', video.name);
 
-                return axios.post(`/channels/${this.channel.id}/videos`, form);
+                this.progress[video.name] = 0;
+                return axios.post(
+                    `/channels/${this.channel.id}/videos`,
+                    form,
+                    {
+                        onUploadProgress: event => {
+                            this.progress[video.name] = Math.ceil(event.loaded / event.total * 100);
+
+                            // Force VueJS update nhung thay doi
+                            this.$forceUpdate();
+                        }
+                    }
+                );
             });
         }
     }
