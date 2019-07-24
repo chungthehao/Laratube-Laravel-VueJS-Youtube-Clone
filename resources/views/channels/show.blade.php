@@ -32,6 +32,24 @@
                                 </div>
                             </div>
 
+                            @if ( ! $channel->editable())
+                                <div class="">
+                                    <h4 class="text-center">{{ $channel->name }}</h4>
+                                    <p class="text-center">{{ $channel->description }}</p>
+                                </div>
+                            @endif
+
+                            <div class="text-center">
+                                <subscribe-button inline-template
+                                                  :channel="{{ $channel }}"
+                                                  :subscriptions="{{ $channel->subscriptions }}">
+                                    <button @click="toggleSubscription"
+                                            class="btn btn-danger">
+                                        @{{ owner ? '' : subscribed ? 'Unsubscribe' : 'Subscribe' }} @{{ subscriptions.length }} @{{ owner ? 'Subscribers' : '' }}
+                                    </button>
+                                </subscribe-button>
+                            </div>
+
                             @if ($channel->editable())
                                 <input type="file" name="avatar"
                                        id="avatar" class="d-none"
@@ -58,21 +76,6 @@
                                 <button type="submit" class="btn btn-info">Update Your Channel</button>
                             @endif
                         </form>
-
-                        @if ( ! $channel->editable())
-                            <div class="">
-                                <h4 class="text-center">{{ $channel->name }}</h4>
-                                <p class="text-center">{{ $channel->description }}</p>
-                            </div>
-                        @endif
-
-                        <div class="text-center">
-                            <subscribe-button inline-template
-                                              :subscriptions="{{ $channel->subscriptions }}">
-                                <button @click="toggleSubscription"
-                                        class="btn btn-danger">Subscribe</button>
-                            </subscribe-button>
-                        </div>
                     </div>
                 </div>
             </div>

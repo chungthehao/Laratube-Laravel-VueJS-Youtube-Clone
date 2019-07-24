@@ -31901,12 +31901,35 @@ if (token) {
 
 Vue.component('subscribe-button', {
   props: {
+    channel: {
+      type: Object,
+      required: true,
+      "default": function _default() {
+        return {};
+      } // Default is an empty object
+
+    },
     subscriptions: {
       type: Array,
       required: true,
       "default": function _default() {
         return [];
-      }
+      } // Default is an empty array
+
+    }
+  },
+  computed: {
+    subscribed: function subscribed() {
+      // Nếu chưa login hoặc
+      // login r mà là owner của channel này hoặc
+      // login r mà ko phải this channel's subscriber --> false
+      if (!__auth() || __auth().id === this.channel.user_id) return false;
+      return !!this.subscriptions.find(function (subscription) {
+        return subscription.user_id === __auth().id;
+      }); // (!!) cast to boolean
+    },
+    owner: function owner() {
+      return __auth() && __auth().id === this.channel.user_id;
     }
   },
   methods: {
@@ -31936,8 +31959,8 @@ Vue.component('subscribe-button', {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\___Source_Code\Laratube-Laravel-VueJS-Youtube-Clone\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\___Source_Code\Laratube-Laravel-VueJS-Youtube-Clone\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/mac/Desktop/Study/laratube/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/mac/Desktop/Study/laratube/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
