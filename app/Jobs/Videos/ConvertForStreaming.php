@@ -16,7 +16,6 @@ class ConvertForStreaming implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $video;
-    //public $x264;
 
     /**
      * Create a new job instance.
@@ -26,7 +25,6 @@ class ConvertForStreaming implements ShouldQueue
     public function __construct(Video $video)
     {
         $this->video = $video;
-        //$this->x264 = new x264('aac'); // aac encoder
     }
 
     /**
@@ -43,6 +41,9 @@ class ConvertForStreaming implements ShouldQueue
         FFMpeg::fromDisk('local')->
                 open($this->video->path)->
                 exportForHLS()->
+                onProgress(function ($percentage) {
+                    $this->video->update(['percentage' => $percentage]);
+                })->
                 addFormat($low)->
                 addFormat($mid)->
                 addFormat($high)->
