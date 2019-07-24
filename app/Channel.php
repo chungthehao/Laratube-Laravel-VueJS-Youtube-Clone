@@ -29,6 +29,11 @@ class Channel extends Model implements HasMedia
         return $this->hasMany(Subscription::class);
     }
 
+    public function videos()
+    {
+        return $this->hasMany(Video::class);
+    }
+
     // Tạo thêm cái thumbnail ảnh mỗi khi upload lên.
     public function registerMediaConversions(Media $media = null)
     {
