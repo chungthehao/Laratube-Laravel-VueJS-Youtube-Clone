@@ -42,6 +42,7 @@ class ConvertForStreaming implements ShouldQueue
                 open($this->video->path)->
                 exportForHLS()->
                 onProgress(function ($percentage) {
+                    // Callback đc nó tự gọi để cập nhật % quá trình xử lý vô db
                     $this->video->update(['percentage' => $percentage]);
                 })->
                 addFormat($low)->
