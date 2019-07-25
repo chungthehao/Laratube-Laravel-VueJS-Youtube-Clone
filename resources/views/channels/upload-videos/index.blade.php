@@ -21,20 +21,29 @@
                         <div class="my-4" v-for="video in videos">
                             <div class="progress mb-3">
                                 <div class="progress-bar progress-bar-striped progress-bar-animated " role="progressbar"
-                                     :style="{ width: `${progress[video.name]}%` }" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                     :style="{ width: `${video.percentage || progress[video.name]}%` }" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                                    @{{ video.percentage ? video.percentage === 100 ? 'Video Processing Completed.' : 'Processing...' : 'Uploading...' }}
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <div class="d-flex justify-content-center align-items-center" style="height: 180px; color: white; font-size: 18px; background: #808080;">
+                                    <div v-if="video.thumbnail === undefined"
+                                         class="d-flex justify-content-center align-items-center"
+                                         style="height: 180px; color: white; font-size: 18px; background: #808080;">
                                         Loading thumbnail ...
                                     </div>
+                                    <img v-else :src="video.thumbnail" alt="" class="img-fluid">
                                 </div>
 
                                 <div class="col-md-4">
-                                    <h4 class="text-center">
-                                        @{{ video.name }}
-                                    </h4>
+                                    <a v-if="video.percentage && video.percentage === 100"
+                                       :href="`/videos/${video.id}`" target="_blank">
+                                        @{{ video.title }}
+                                    </a>
 
+                                    <h4 v-else class="text-center">
+                                        @{{ video.title || video.name }}
+                                    </h4>
                                 </div>
                             </div>
                         </div>

@@ -32939,7 +32939,12 @@ Vue.component('channel-uploads', {
     return {
       selected: false,
       videos: [],
-      progress: {}
+      // file list
+      progress: {},
+      uploads: [],
+      // video return from server
+      intervals: {} // Muc dich de fetch % xu ly viec convert video
+
     };
   },
   methods: {
@@ -32961,6 +32966,37 @@ Vue.component('channel-uploads', {
 
             _this.$forceUpdate();
           }
+        }).then(function (res) {
+          var video = res.data;
+
+          _this.uploads.push(video);
+        });
+      }); // Sau khi upload xong cac video len server thi...
+
+      axios.all(uploaders).then(function () {
+        // Thay thế object video từ browser bằng kq video (db record) trả về từ server
+        _this.videos = _this.uploads; // Set chu ky fetch record moi ve de co thong tin field 'percentage'
+
+        _this.videos.forEach(function (video) {
+          _this.intervals[video.id] = setInterval(function () {
+            axios.get("/videos/".concat(video.id)).then(function (_ref) {
+              var data = _ref.data;
+
+              // Neu da convert video xong thi thoi, xoa chu ky fetch di
+              if (data.percentage === 100) {
+                clearInterval(_this.intervals[video.id]);
+              } // Cap nhat vo this.videos de no co thong tin percentage moi nhat tu server
+
+
+              _this.videos = _this.videos.map(function (v) {
+                if (v.id === data.id) {
+                  return data;
+                }
+
+                return v;
+              });
+            });
+          }, 3000);
         });
       });
     }
