@@ -20,6 +20,7 @@ class CreateVideosTable extends Migration
             $table->text('description')->nullable();
             $table->string('path');
             $table->integer('percentage')->nullable();
+            $table->string('thumbnail')->nullable();
             $table->timestamps();
         });
     }
