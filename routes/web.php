@@ -21,6 +21,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('/channels', 'ChannelController');
 
 Route::get('/videos/{video}', 'VideoController@show');
+Route::put('/videos/{video}', 'VideoController@updateViews');
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('/channels.subscriptions', 'SubscriptionController')->only(['store', 'destroy']);
