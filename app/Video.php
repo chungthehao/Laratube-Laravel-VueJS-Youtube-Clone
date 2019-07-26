@@ -15,6 +15,9 @@ class Video extends Model
         return auth()->check() && auth()->id() === $this->channel->user_id;
     }
 
+    /**
+     * Get all of the video's votes.
+     */
     public function votes()
     {
         return $this->morphMany(Vote::class, 'votable');
