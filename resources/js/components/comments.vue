@@ -36,7 +36,9 @@
         </div>
 
         <div class="text-center">
-            <button class="btn btn-success">Load More</button>
+            <button @click="fetchComments" v-if="canLoadMore"
+                    class="btn btn-success">Load More</button>
+            <span v-else class="text-danger">No more comments to show.</span>
         </div>
     </div>
 </template>
@@ -54,17 +56,31 @@ export default {
             },
         };
     },
+    computed: {
+        canLoadMore() {
+            return ('next_page_url' in this.comments) ? !!this.comments.next_page_url : true;
+        },
+    },
     mounted() {
         this.fetchComments();
     },
     methods: {
         fetchComments() {
-            axios.get(`/videos/${this.video.id}/comments`)
-                .then(res => {
-                    //console.log(res.data);
-                    this.comments = res.data;
-                })
-                .catch(err => console.log(err));
+            const url = this.comments.next_page_url ? this.comments.next_page_url : `/videos/${this.video.id}/comments`;
+            if (this.canLoadMore) {
+                axios.get(url)
+                    .then(res => {
+                        //console.log(res.data);
+                        this.comments = {
+                            ...res.data,
+                            data: [
+                                ...this.comments.data,
+                                ...res.data.data
+                            ],
+                        };
+                    })
+                    .catch(err => console.log(err));
+            }
         }
     }
 }
