@@ -14,6 +14,7 @@ class VideoController extends Controller
         if (request()->wantsJson()) {
             return $video;
         }
+        //dd($video->comments->load('replies'));
         return view('video', compact('video'));
     }
 

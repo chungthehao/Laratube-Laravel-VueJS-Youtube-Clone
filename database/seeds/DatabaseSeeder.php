@@ -46,5 +46,19 @@ class DatabaseSeeder extends Seeder
             'channel_id' => $channel2->id,
         ]);
 
+        // Video & comments
+        $video = factory(\Laratube\Video::class)->create([
+            'channel_id' => $channel1->id,
+        ]);
+        factory(\Laratube\Comment::class, 10)->create([
+            'video_id' => $video->id
+        ]);
+        // comment's replies
+        $firstComment = \Laratube\Comment::first();
+        factory(\Laratube\Comment::class, 5)->create([
+            'video_id' => $video->id,
+            'comment_id' => $firstComment->id
+        ]);
+
     }
 }

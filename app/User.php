@@ -60,6 +60,11 @@ class User extends Authenticatable
         return $this->hasOne(Channel::class);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public function toggleVote($entity, $type)
     {
         if ($entity instanceof Video || 1) {
