@@ -16,8 +16,8 @@ class CreateVotesTable extends Migration
         Schema::create('votes', function (Blueprint $table) {
             $table->uuid('id');
             $table->enum('type', ['up', 'down'])->default('up');
-            $table->string('votable_type');
-            $table->uuid('votable_id');
+            $table->string('votable_type'); //
+            $table->uuid('votable_id'); // videos.id or comments.id
             $table->uuid('user_id');
             $table->timestamps();
         });

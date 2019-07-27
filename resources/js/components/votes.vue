@@ -73,7 +73,11 @@ export default {
         },
         entityOwnerId: { // Co the la video hoac comment
             required: true,
-            default: () => ''
+            default: ''
+        },
+        entityId: {
+            required: true,
+            default: ''
         }
     },
     data() {
@@ -83,10 +87,16 @@ export default {
     },
     computed: {
         upvotes() {
-            return this.votes.filter(vote => vote.type === 'up');
+            if (this.votes)
+                return this.votes.filter(vote => vote.type === 'up');
+            else
+                return [];
         },
         downvotes() {
-            return this.votes.filter(vote => vote.type === 'down');
+            if (this.votes)
+                return this.votes.filter(vote => vote.type === 'down');
+            else
+                return [];
         },
         totalUpvotes() {
             return numeral(this.upvotes.length).format('0a');
@@ -105,13 +115,50 @@ export default {
     },
     methods: {
         vote(type) {
-            if (__auth() && __auth().id === this.entityOwnerId)
+            console.log('Type request', type);
+            // Login mới đc vote
+            if (!__auth()) return alert('Please login to vote!');
+
+            // Nếu user đang login là chủ của entity (video/comment) này thì ko đc vote
+            if (__auth().id === this.entityOwnerId)
                 return alert('You can NOT vote this item!');
 
+            // Nếu đã vote là 'up' thì ko đc vote 'up' nữa
             if (type === 'up' && this.upvoted) return;
 
+            // Nếu đã vote là 'down' thì ko đc vote 'down' nữa
             if (type === 'down' && this.downvoted) return;
 
+            // + Cần biết:
+            // - Vote cho cái gì? --> entityId
+            // - Loại vote là gì (up/down)? -->  type
+            axios.post(`/votes/${this.entityId}/${type}`)
+                .then(({ data:editedVote }) => {
+                    if (this.votes.length &&
+                        (this.upvoted || this.downvoted)) { //debugger
+                        // Nếu đã từng vote rồi trước đây rồi và mới edit lại
+
+                        // C1
+                        /*this.votes= this.votes.map(v => {
+                            if (v.id === editedVote.id) {
+                                return editedVote;
+                            }
+                            return v;
+                        });*/
+
+                        /**
+                         * https://vuejs.org/2016/02/06/common-gotchas/
+                         */
+                        const alreadyVoteIndex = this.votes.findIndex(v => v.id === editedVote.id);
+                        if (alreadyVoteIndex > -1) {
+                            this.votes.splice(alreadyVoteIndex, 1, editedVote);
+                        }
+                    } else {
+                        // Chưa vote bao giờ, mới vote xong lần này!
+                        this.votes.push(editedVote);
+                    }
+                })
+                .catch(err => console.log(err));
         }
     }
 }

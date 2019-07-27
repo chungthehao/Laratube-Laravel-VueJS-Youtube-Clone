@@ -1877,9 +1877,11 @@ __webpack_require__.r(__webpack_exports__);
     entityOwnerId: {
       // Co the la video hoac comment
       required: true,
-      "default": function _default() {
-        return '';
-      }
+      "default": ''
+    },
+    entityId: {
+      required: true,
+      "default": ''
     }
   },
   data: function data() {
@@ -1889,14 +1891,14 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     upvotes: function upvotes() {
-      return this.votes.filter(function (vote) {
+      if (this.votes) return this.votes.filter(function (vote) {
         return vote.type === 'up';
-      });
+      });else return [];
     },
     downvotes: function downvotes() {
-      return this.votes.filter(function (vote) {
+      if (this.votes) return this.votes.filter(function (vote) {
         return vote.type === 'down';
-      });
+      });else return [];
     },
     totalUpvotes: function totalUpvotes() {
       return numeral__WEBPACK_IMPORTED_MODULE_0___default()(this.upvotes.length).format('0a');
@@ -1919,9 +1921,52 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     vote: function vote(type) {
-      if (__auth() && __auth().id === this.entityOwnerId) return alert('You can NOT vote this item!');
-      if (type === 'up' && this.upvoted) return;
-      if (type === 'down' && this.downvoted) return;
+      var _this = this;
+
+      console.log('Type request', type); // Login mới đc vote
+
+      if (!__auth()) return alert('Please login to vote!'); // Nếu user đang login là chủ của entity (video/comment) này thì ko đc vote
+
+      if (__auth().id === this.entityOwnerId) return alert('You can NOT vote this item!'); // Nếu đã vote là 'up' thì ko đc vote 'up' nữa
+
+      if (type === 'up' && this.upvoted) return; // Nếu đã vote là 'down' thì ko đc vote 'down' nữa
+
+      if (type === 'down' && this.downvoted) return; // + Cần biết:
+      // - Vote cho cái gì? --> entityId
+      // - Loại vote là gì (up/down)? -->  type
+
+      axios.post("/votes/".concat(this.entityId, "/").concat(type)).then(function (_ref) {
+        var editedVote = _ref.data;
+
+        if (_this.votes.length && (_this.upvoted || _this.downvoted)) {
+          //debugger
+          // Nếu đã từng vote rồi trước đây rồi và mới edit lại
+          // C1
+
+          /*this.votes= this.votes.map(v => {
+              if (v.id === editedVote.id) {
+                  return editedVote;
+              }
+              return v;
+          });*/
+
+          /**
+           * https://vuejs.org/2016/02/06/common-gotchas/
+           */
+          var alreadyVoteIndex = _this.votes.findIndex(function (v) {
+            return v.id === editedVote.id;
+          });
+
+          if (alreadyVoteIndex > -1) {
+            _this.votes.splice(alreadyVoteIndex, 1, editedVote);
+          }
+        } else {
+          // Chưa vote bao giờ, mới vote xong lần này!
+          _this.votes.push(editedVote);
+        }
+      })["catch"](function (err) {
+        return console.log(err);
+      });
     }
   }
 });
@@ -33648,8 +33693,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/mac/Desktop/Study/laratube/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/mac/Desktop/Study/laratube/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\___Source_Code\Laratube-Laravel-VueJS-Youtube-Clone\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\___Source_Code\Laratube-Laravel-VueJS-Youtube-Clone\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

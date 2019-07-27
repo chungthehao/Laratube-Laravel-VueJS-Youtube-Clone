@@ -59,4 +59,26 @@ class User extends Authenticatable
     {
         return $this->hasOne(Channel::class);
     }
+
+    public function toggleVote($entity, $type)
+    {
+        if ($entity instanceof Video || 1) {
+            // Check coi user này có vote cho entity (video/comment) này trước đây ko?
+            $vote = $entity->votes()->where('user_id', $this->id)->first();
+            if ($vote) {
+                // Đã từng vote, giờ họ edit lại (đã có record trong db)
+                $vote->update(['type' => $type]);
+                return $vote->refresh(); // Get a fresh copy record from database
+            } else {
+                // Đó giờ chưa vote (chưa có record trong db)
+                return $entity->votes()->create([
+                    'type' => $type,
+                    'user_id' => $this->id
+                ]);
+            }
+
+        }
+
+    }
+
 }

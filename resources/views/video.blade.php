@@ -30,7 +30,8 @@
                                     </div>
 
                                     <votes :init-votes="{{ $video->votes }}"
-                                           :entity-owner-id="'{{ $video->channel->user_id }}'"></votes>
+                                           :entity-owner-id="'{{ $video->channel->user_id }}'"
+                                           :entity-id="'{{ $video->id }}'"></votes>
                                 </div>
 
                                 <hr>
