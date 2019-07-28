@@ -21,13 +21,13 @@
             </div>
 
             <div v-show="toggleAddReply" class="form-inline my-4 w-full">
-                <input type="text" class="form-control form-control-sm w-80">
-                <button class="btn btn-sm btn-primary">
+                <input v-model="newReply" type="text" class="form-control form-control-sm w-80">
+                <button @click="addReply" class="btn btn-sm btn-primary">
                     <small>Add Reply</small>
                 </button>
             </div>
 
-            <replies :comment="comment"></replies>
+            <replies ref="replies" :comment="comment"></replies>
         </div>
     </div>
 </template>
@@ -39,12 +39,34 @@ import Votes from './votes';
 
 export default {
     components: { Avatar, Replies, Votes },
-    props: ['comment'],
+    props: ['comment', 'video'],
     data() {
         return {
-            toggleAddReply: false
+            toggleAddReply: false,
+            newReply: '',
         };
     },
+    methods: {
+        addReply() {
+            //return console.log(this.$refs.replies);
+
+            if (!this.newReply.trim()) return;
+
+            axios.post(`/comments/${this.video.id}`, {
+                body: this.newReply,
+                comment_id: this.comment.id
+            }).then(({ data:newReply }) => {
+                console.log(newReply);
+
+                // Cách để trigger Replies component cập nhật data của nó (replies)
+                // (Vì nó ko nhận props nào lquan đến data mà mình cần nó cập nhật)
+                this.$refs.replies.addReply(newReply);
+
+                this.newReply = '';
+                this.toggleAddReply = false;
+            }).catch(err => console.log(err));
+        }
+    }
 }
 </script>
 

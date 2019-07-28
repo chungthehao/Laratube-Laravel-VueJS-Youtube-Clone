@@ -23,7 +23,7 @@ class Comment extends Model
 
     public function replies()
     {
-        return $this->hasMany(Comment::class); // Tự nó tìm comment_id match với của nó
+        return $this->hasMany(Comment::class)->latest(); // Tự nó tìm comment_id match với của nó
     }
 
     public function getTotalRepliesAttribute()

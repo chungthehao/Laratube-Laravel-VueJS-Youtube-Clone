@@ -10,7 +10,8 @@
 
         <comment v-for="comment in comments.data"
                  :key="comment.id"
-                 :comment="comment"></comment>
+                 :comment="comment"
+                 :video="video"></comment>
 
         <div class="text-center">
             <button @click="fetchComments" v-if="canLoadMore"
@@ -64,7 +65,6 @@ export default {
             }
         },
         addComment() {
-
             if (!this.newComment.trim()) return;
 
             axios.post(`/comments/${this.video.id}`, {
