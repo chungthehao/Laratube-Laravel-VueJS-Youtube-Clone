@@ -4,6 +4,8 @@ namespace Laratube;
 
 class Comment extends Model
 {
+    protected $appends = ['total_replies'];
+
     public function video()
     {
         return $this->belongsTo(Video::class);
@@ -22,5 +24,10 @@ class Comment extends Model
     public function replies()
     {
         return $this->hasMany(Comment::class); // Tự nó tìm comment_id match với của nó
+    }
+
+    public function getTotalRepliesAttribute()
+    {
+        return $this->replies()->count();
     }
 }

@@ -22,10 +22,11 @@ Route::resource('/channels', 'ChannelController');
 
 Route::get('/videos/{video}', 'VideoController@show');
 Route::put('/videos/{video}', 'VideoController@updateViews');
-Route::get('videos/{video}/comments', 'CommentController@index');
 Route::put('/videos/{video}/update', 'VideoController@update')
     ->middleware(['auth'])
     ->name('videos.update');
+Route::get('/videos/{video}/comments', 'CommentController@index');
+Route::get('/comments/{comment}/replies', 'CommentController@getReplies');
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('/channels.subscriptions', 'SubscriptionController')->only(['store', 'destroy']);
