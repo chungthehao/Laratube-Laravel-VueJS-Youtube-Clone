@@ -1,12 +1,5 @@
 <template>
     <div>
-        <!--<div class="form-inline my-4 w-full">
-            <input type="text" class="form-control form-control-sm w-80">
-            <button class="btn btn-sm btn-primary">
-                <small>Add Reply</small>
-            </button>
-        </div>-->
-
         <div v-for="reply in replies.data" :key="reply.id" class="media my-4">
             <a class="mr-3" href="#">
                 <avatar :username="reply.user.name"

@@ -8,28 +8,9 @@
             </button>
         </div>
 
-        <div v-for="comment in comments.data"
-             :key="comment.id"
-             class="media my-3">
-            <avatar :username="comment.user.name"
-                    width="30" height="30" class="rounded-circle mr-3"></avatar>
-
-            <div class="media-body">
-                <h6 class="mt-0">{{ comment.user.name }}</h6>
-
-                <small>{{ comment.body }}</small>
-
-                <div class="d-flex">
-                    <votes :init-votes="comment.votes"
-                           :entity-id="comment.id"
-                           :entity-owner-id="comment.user.id"></votes>
-
-                    <button class="btn btn-sm btn-outline-dark ml-4">Add Reply</button>
-                </div>
-
-                <replies :comment="comment"></replies>
-            </div>
-        </div>
+        <comment v-for="comment in comments.data"
+                 :key="comment.id"
+                 :comment="comment"></comment>
 
         <div class="text-center">
             <button @click="fetchComments" v-if="canLoadMore"
@@ -40,13 +21,11 @@
 </template>
 
 <script>
-import Avatar from 'vue-avatar';
-import Replies from './replies.vue';
-import Votes from './votes';
+import Comment from './comment';
 
 export default {
+    components: {Comment},
     props: ['video'],
-    components: { Avatar, Replies, Votes },
     data() {
         return {
             comments: {
