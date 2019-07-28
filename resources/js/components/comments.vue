@@ -1,8 +1,9 @@
 <template>
     <div class="card mt-5 p-5">
-        <div class="form-inline my-4 w-full">
-            <input type="text" class="form-control form-control-sm w-80">
-            <button class="btn btn-sm btn-primary">
+        <div v-if="isLoggedIn" class="form-inline my-4 w-full">
+            <input type="text" v-model="newComment"
+                   class="form-control form-control-sm w-80">
+            <button @click="addComment" class="btn btn-sm btn-primary">
                 <small>Add comment</small>
             </button>
         </div>
@@ -18,9 +19,13 @@
 
                 <small>{{ comment.body }}</small>
 
-                <votes :init-votes="comment.votes"
-                       :entity-id="comment.id"
-                       :entity-owner-id="comment.user.id"></votes>
+                <div class="d-flex">
+                    <votes :init-votes="comment.votes"
+                           :entity-id="comment.id"
+                           :entity-owner-id="comment.user.id"></votes>
+
+                    <button class="btn btn-sm btn-outline-dark ml-4">Add Reply</button>
+                </div>
 
                 <replies :comment="comment"></replies>
             </div>
@@ -47,11 +52,15 @@ export default {
             comments: {
                 data: []
             },
+            newComment: '',
         };
     },
     computed: {
         canLoadMore() {
             return ('next_page_url' in this.comments) ? !!this.comments.next_page_url : true;
+        },
+        isLoggedIn() {
+            return __auth();
         },
     },
     mounted() {
@@ -74,7 +83,25 @@ export default {
                     })
                     .catch(err => console.log(err));
             }
-        }
+        },
+        addComment() {
+
+            if (!this.newComment.trim()) return;
+
+            axios.post(`/comments/${this.video.id}`, {
+                body: this.newComment
+            }).then(({ data:newComment }) => {
+                //console.log(newComment);
+                this.comments = {
+                    ...this.comments,
+                    data: [
+                        newComment,
+                        ...this.comments.data
+                    ]
+                };
+                this.newComment = '';
+            }).catch(err => console.log(err));
+        },
     }
 }
 </script>

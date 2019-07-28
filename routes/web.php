@@ -36,4 +36,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('votes/{entityId}/{type}', 'VoteController@vote');
 
+    Route::post('/comments/{video}', 'CommentController@store');
+
 });
