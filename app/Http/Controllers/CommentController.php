@@ -10,11 +10,11 @@ class CommentController extends Controller
 {
     public function index(Video $video)
     {
-        return $video->comments()->with(['user'])->paginate(3); // 3 comments per "page"
+        return $video->comments()->with(['user', 'votes'])->paginate(3); // 3 comments per "page"
     }
 
     public function getReplies(Comment $comment)
     {
-        return $comment->replies()->with(['user'])->paginate(3);
+        return $comment->replies()->with(['user', 'votes'])->paginate(3);
     }
 }

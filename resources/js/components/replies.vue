@@ -7,7 +7,7 @@
             </button>
         </div>
 
-        <div v-for="reply in replies.data" :key="reply.id" class="media mt-3">
+        <div v-for="reply in replies.data" :key="reply.id" class="media my-4">
             <a class="mr-3" href="#">
                 <avatar :username="reply.user.name"
                         width="30" height="30" class="rounded-circle mr-3"></avatar>
@@ -15,6 +15,9 @@
             <div class="media-body">
                 <h6 class="mt-0">{{ reply.user.name }}</h6>
                 <small >{{ reply.body }}</small>
+                <votes :init-votes="reply.votes"
+                       :entity-id="reply.id"
+                       :entity-owner-id="reply.user.id"></votes>
             </div>
         </div>
 
